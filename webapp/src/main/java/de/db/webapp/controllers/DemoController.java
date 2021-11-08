@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 //    @Controller
 //        @RestController
 
-@RestController
+@RestController // @Component
 @RequestMapping("/v1/demo")
 public class DemoController {
 
