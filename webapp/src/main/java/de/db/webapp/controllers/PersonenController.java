@@ -6,10 +6,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponents;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.swing.text.html.Option;
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/v1/personen")
@@ -63,8 +67,27 @@ public class PersonenController {
     @ApiResponse(responseCode = "201", description = "Person wurde erfasst")
     @ApiResponse(responseCode = "500", description = "Interner Serverfehler")
     @PutMapping(path="", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Void> saveOrUpdate(@RequestBody  PersonDTO person){
+    public ResponseEntity<Void> saveOrUpdate(@Valid @RequestBody  PersonDTO person){
         System.out.println("Person wurde gespeichert");
         return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+    @ApiResponse(responseCode = "200", description = "Person wurde geaendert")
+    @ApiResponse(responseCode = "201", description = "Person wurde erfasst")
+    @ApiResponse(responseCode = "500", description = "Interner Serverfehler")
+    @PostMapping(path="", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Void> saveOrUpdateNotIdempotent(@RequestBody  PersonDTO person, UriComponentsBuilder builder){
+        person.setId(UUID.randomUUID().toString());
+        UriComponents uriComponents = builder.path("/v1/personen/{id}").buildAndExpand(person.getId());
+
+        System.out.println("Person wurde gespeichert");
+        return ResponseEntity.created(uriComponents.toUri()).build();
+    }
+
+    @PostMapping(path="/toUpper", consumes = MediaType.APPLICATION_JSON_VALUE, produces =  MediaType.APPLICATION_JSON_VALUE) // Ersatzget
+    public ResponseEntity<PersonDTO> toUpper (@RequestBody  PersonDTO person) {
+        person.setVorname(person.getVorname().toUpperCase());
+        person.setNachname(person.getNachname().toUpperCase());
+        return ResponseEntity.ok(person);
     }
 }
