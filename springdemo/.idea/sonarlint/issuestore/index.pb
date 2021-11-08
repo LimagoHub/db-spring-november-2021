@@ -1,3 +1,19 @@
 
+S
+#.idea/sonarlint/issuestore/index.pb,9\f\9fe84ebb15faf917b7def6236dba604453cc61e0
+W
+'src/main/java/de/client/CalcClient.java,c\5\c5376bfc3c29ae43ff542543ca0e65e8be6f104d
+U
+%src/main/java/de/math/Calculator.java,0\1\019a3ece1d462b8e67e5bbde49f327272f30a225
+Y
+)src/main/java/de/math/CalculatorImpl.java,4\c\4cc7934d911585bf42b666127c2844b58c4b5932
+[
++src/main/java/de/math/CalculatorLogger.java,3\d\3d7876f44ed500736db34be2ece6927ee0bbef05
+[
++src/main/java/de/math/CalculatorSecure.java,f\1\f13009993f64b1677cfb24d33d6d6e0292de46e6
+]
+-src/main/java/de/application/hello/Hello.java,0\2\026ab080caaa55723ed78ab8d7fcbb71044b71c8
 7
 pom.xml,4\4\442292b8a7efeabbe4cc176709b833b1792140ec
+V
+&src/main/java/de/application/Main.java,6\f\6f9d94a702105164fdab72f000411296da29c6bb
