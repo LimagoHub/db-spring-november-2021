@@ -9,24 +9,25 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 import de.application.hello.Hello;
 
 
-
+@ComponentScan("de")
 public class Main {
 
 	/**
 	 * @param args
 	 */
+
 	public static void main(String[] args) {
-		 //AbstractApplicationContext context = new ClassPathXmlApplicationContext("Beans.xml");
-		 AbstractApplicationContext context = new AnnotationConfigApplicationContext();
-		 context.registerShutdownHook();
-		 
-		 System.out.println("#########");
-	     Hello obj = (Hello) context.getBean("hello");
-//	     Hello obj2 = (Hello) context.getBean("hello");
-//	     
-//	     
-//	     System.out.println(obj == obj2);
-		
+		//AbstractApplicationContext context = new ClassPathXmlApplicationContext("Beans.xml");
+		AbstractApplicationContext context = new AnnotationConfigApplicationContext(Main.class);
+		context.registerShutdownHook();
+
+//		Hello hello = (Hello) context.getBean("hello");
+//		Hello hello2 = (Hello) context.getBean("hello");
+//
+//
+//		System.out.println(hello == hello2);
+
+
 		
 	}
 
