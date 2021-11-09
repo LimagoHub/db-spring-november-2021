@@ -30,41 +30,24 @@ public class PersonenController {
     @ApiResponse(responseCode = "404", description = "Person wurde nicht gefunden")
     @ApiResponse(responseCode = "500", description = "Interner Serverfehler")
     @GetMapping(path = "/{id}", produces= {MediaType.APPLICATION_JSON_VALUE,MediaType.APPLICATION_XML_VALUE})
-    public ResponseEntity<PersonDTO> getPersonById(@PathVariable  String id) {
-        Optional<PersonDTO> optional;
-        if(id.startsWith("1")){
-            optional =  Optional.of( PersonDTO.builder().id(id).vorname("John").nachname("Doe").build());
+    public ResponseEntity<PersonDTO> getPersonById(@PathVariable  String id) throws Exception{
 
-        } else {
-            optional = Optional.empty();
-        }
-        return ResponseEntity.of(optional);
+        return ResponseEntity.of(service.findePersonNachId(id).map(mapper::convert));
     }
 
     @ApiResponse(responseCode = "200", description = "Liste wurde erstellt")
     @ApiResponse(responseCode = "500", description = "Interner Serverfehler")
     @GetMapping(path = "", produces= {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<List<PersonDTO>> findAll(@RequestParam(defaultValue = "", required = false) String vorname, @RequestParam(defaultValue = "", required = false) String nachname) {
-
-        System.out.println(vorname);
-        System.out.println(nachname);
-        List<PersonDTO> result = List.of(
-                PersonDTO.builder().id("1").vorname("John").nachname("Doe").build(),
-                PersonDTO.builder().id("1").vorname("John").nachname("Wayne").build(),
-                PersonDTO.builder().id("1").vorname("John").nachname("Wick").build(),
-                PersonDTO.builder().id("1").vorname("John").nachname("McClaine").build(),
-                PersonDTO.builder().id("1").vorname("John").nachname("Rambo").build(),
-                PersonDTO.builder().id("1").vorname("John Boy").nachname("Walton").build()
-        );
-
-        return ResponseEntity.ok(result);
+    public ResponseEntity<Iterable<PersonDTO>> findAll(@RequestParam(defaultValue = "", required = false) String vorname, @RequestParam(defaultValue = "", required = false) String nachname) throws Exception{
+        return ResponseEntity.ok(mapper.convert(service.findeAlle()));
     }
+
     @ApiResponse(responseCode = "204", description = "Person wurde geloescht")
     @ApiResponse(responseCode = "404", description = "Person wurde nicht gefunden")
     @ApiResponse(responseCode = "500", description = "Interner Serverfehler")
     @DeleteMapping(path = "/{id}")
-    public ResponseEntity<Void> deleteById(@PathVariable  String id){
-        if(id.startsWith("1")){
+    public ResponseEntity<Void> deleteById(@PathVariable  String id) throws Exception{
+        if(service.loeschen(id)){
            return ResponseEntity.noContent().build();
         }
         return ResponseEntity.notFound().build();
@@ -74,8 +57,9 @@ public class PersonenController {
     @ApiResponse(responseCode = "201", description = "Person wurde erfasst")
     @ApiResponse(responseCode = "500", description = "Interner Serverfehler")
     @PutMapping(path="", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Void> saveOrUpdate(@Valid @RequestBody  PersonDTO person){
-        System.out.println("Person wurde gespeichert");
+    public ResponseEntity<Void> saveOrUpdate(@Valid @RequestBody  PersonDTO person) throws Exception{
+        if(service.speichernOderAendern(mapper.convert(person)))
+            return ResponseEntity.ok().build();
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
@@ -83,12 +67,12 @@ public class PersonenController {
     @ApiResponse(responseCode = "201", description = "Person wurde erfasst")
     @ApiResponse(responseCode = "500", description = "Interner Serverfehler")
     @PostMapping(path="", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Void> saveOrUpdateNotIdempotent(@RequestBody  PersonDTO person, UriComponentsBuilder builder){
-        person.setId(UUID.randomUUID().toString());
+    public ResponseEntity<Void> saveOrUpdateNotIdempotent(@RequestBody  PersonDTO person, UriComponentsBuilder builder)  throws Exception{
+        person.setId(UUID.randomUUID().toString()); // Hier nicht sinnvoll
         UriComponents uriComponents = builder.path("/v1/personen/{id}").buildAndExpand(person.getId());
-
-        System.out.println("Person wurde gespeichert");
-        return ResponseEntity.created(uriComponents.toUri()).build();
+        if(service.speichernOderAendern(mapper.convert(person)))
+            return ResponseEntity.ok().build();
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @PostMapping(path="/toUpper", consumes = MediaType.APPLICATION_JSON_VALUE, produces =  MediaType.APPLICATION_JSON_VALUE) // Ersatzget
