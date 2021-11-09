@@ -1,7 +1,10 @@
 package de.db.webapp.controllers;
 
 import de.db.webapp.controllers.dtos.PersonDTO;
+import de.db.webapp.controllers.mapper.PersonDTOMapper;
+import de.db.webapp.services.PersonenService;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +20,11 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/v1/personen")
+@AllArgsConstructor
 public class PersonenController {
+
+    private final PersonenService service;
+    private final PersonDTOMapper mapper;
 
     @ApiResponse(responseCode = "200", description = "Person wurde gefunden")
     @ApiResponse(responseCode = "404", description = "Person wurde nicht gefunden")

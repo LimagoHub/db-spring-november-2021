@@ -1,6 +1,7 @@
 package de.db.webapp.services.impl;
 
 import de.db.webapp.repositories.PersonenRepository;
+import de.db.webapp.repositories.entities.PersonEntity;
 import de.db.webapp.services.PersonenService;
 import de.db.webapp.services.PersonenServiceException;
 import de.db.webapp.services.mapper.PersonMapper;
@@ -9,8 +10,11 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 @Service
 
@@ -81,21 +85,40 @@ public class PersonenServiceImpl implements PersonenService {
 
     @Override
     public boolean loeschen(Person person) throws PersonenServiceException {
-        return false;
+        validate(person);
+        return loeschen(person.getId());
     }
 
     @Override
     public boolean loeschen(String id) throws PersonenServiceException {
-        return false;
+        try {
+            if(repo.existsById(id)){
+                repo.deleteById(id);
+                return true;
+            }
+            return false;
+        } catch (Exception e) {
+           throw new PersonenServiceException("Upps", e);
+        }
     }
 
     @Override
     public Optional<Person> findePersonNachId(String id) throws PersonenServiceException {
-        return Optional.empty();
+        try {
+            return repo.findById(id).map(mapper::convert);
+        } catch (Exception e) {
+            throw new PersonenServiceException("Upps", e);
+        }
     }
 
     @Override
     public Iterable<Person> findeAlle() throws PersonenServiceException {
-        return null;
+
+        try {
+            return mapper.convert(repo.findAll());
+
+        } catch (Exception e) {
+            throw new PersonenServiceException("Upps", e);
+        }
     }
 }
