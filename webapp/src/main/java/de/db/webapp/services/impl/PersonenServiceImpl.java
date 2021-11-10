@@ -8,6 +8,9 @@ import de.db.webapp.services.mapper.PersonMapper;
 import de.db.webapp.services.models.Person;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 
 import java.util.ArrayList;
@@ -17,7 +20,7 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 @Service
-
+@Transactional(rollbackFor = PersonenServiceException.class, propagation = Propagation.REQUIRED, isolation = Isolation.READ_COMMITTED)
 public class PersonenServiceImpl implements PersonenService {
 
     private final PersonenRepository repo;
@@ -43,6 +46,12 @@ public class PersonenServiceImpl implements PersonenService {
 
 
      */
+
+    public void BulkInsert(List<Person> personen) throws Exception{
+        for (Person p: personen) {
+            speichernOderAendern(p);
+        }
+    }
 
     @Override
     public boolean speichernOderAendern(Person person) throws PersonenServiceException {
