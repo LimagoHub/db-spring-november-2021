@@ -6,6 +6,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.annotation.RequestScope;
 import org.springframework.web.context.annotation.SessionScope;
 
+import java.util.UUID;
+
 //@Component
 //    @Service
 //    @Repository
@@ -23,4 +25,12 @@ public class DemoController {
     public String gruss() {
         return "Hallo Spring";
     }
+    @GetMapping("/uuid")
+    public String createUUID() {
+        return UUID.randomUUID().toString();
+    }
+
+
+
+
 }

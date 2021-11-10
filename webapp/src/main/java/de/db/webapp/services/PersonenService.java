@@ -12,5 +12,5 @@ public interface PersonenService {
     Optional<Person> findePersonNachId(String id) throws PersonenServiceException;
     Iterable<Person> findeAlle() throws PersonenServiceException;
 
-    // fuettern
+   //x
 }

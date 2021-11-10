@@ -114,6 +114,7 @@ public class PersonenServiceImpl implements PersonenService {
     @Override
     public Optional<Person> findePersonNachId(String id) throws PersonenServiceException {
         try {
+
             return repo.findById(id).map(mapper::convert);
         } catch (Exception e) {
             throw new PersonenServiceException("Upps", e);
