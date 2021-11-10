@@ -15,7 +15,7 @@ import javax.validation.constraints.Size;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-
+// Technische Klasse
 // JPA
 @Entity
 @Table(name="tbl_personen")
