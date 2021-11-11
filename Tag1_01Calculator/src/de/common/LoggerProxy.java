@@ -25,7 +25,7 @@ public class LoggerProxy implements java.lang.reflect.InvocationHandler {
         try {
             System.out.println("before method " + m.getName()); // Before Advice
             result = m.invoke(obj, args);
-            // After Teturning Advice
+            // After Returning Advice
         } catch (InvocationTargetException e) {
             throw e.getTargetException(); // AfterThrowing Advice
         } catch (Exception e) {
