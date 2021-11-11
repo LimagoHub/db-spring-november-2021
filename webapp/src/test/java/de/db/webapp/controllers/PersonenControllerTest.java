@@ -12,6 +12,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +22,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -99,5 +101,42 @@ class PersonenControllerTest {
 
         assertEquals(HttpStatus.OK, dtoResponse.getStatusCode());
     }
+    @Test
+    public void test8() throws Exception{
+
+        HttpEntity entity = new HttpEntity(PersonDTO.builder().build());
+        when(personenServiceMock.speichernOderAendern(any())).thenThrow(PersonenServiceException.class);
+        ResponseEntity<Void> dtoResponse = restTemplate.exchange("/v1/personen", HttpMethod.PUT, entity, Void.class);
+
+        assertEquals(HttpStatus.BAD_REQUEST, dtoResponse.getStatusCode());
+    }
+    @Test
+    public void test9() throws Exception{
+
+        String id = UUID.randomUUID().toString();
+        PersonDTO dto = PersonDTO.builder().id(id).vorname("John").nachname("Doe").build();
+        Person expected = Person.builder().id(id).vorname("John").nachname("Doe").build();
+        HttpEntity entity = new HttpEntity(dto);
+        when(personenServiceMock.speichernOderAendern(any())).thenReturn(true);
+        ResponseEntity<Void> dtoResponse = restTemplate.exchange("/v1/personen", HttpMethod.PUT, entity, Void.class);
+
+        assertEquals(HttpStatus.OK, dtoResponse.getStatusCode());
+        verify(personenServiceMock, times(1)).speichernOderAendern(expected);
+    }
+
+    @Test
+    public void test10() throws Exception{
+
+        String id = UUID.randomUUID().toString();
+        PersonDTO dto = PersonDTO.builder().id(id).vorname("John").nachname("Doe").build();
+        Person expected = Person.builder().id(id).vorname("John").nachname("Doe").build();
+        HttpEntity entity = new HttpEntity(dto);
+        when(personenServiceMock.speichernOderAendern(any())).thenReturn(false);
+        ResponseEntity<Void> dtoResponse = restTemplate.exchange("/v1/personen", HttpMethod.PUT, entity, Void.class);
+
+        assertEquals(HttpStatus.CREATED, dtoResponse.getStatusCode());
+        verify(personenServiceMock, times(1)).speichernOderAendern(expected);
+    }
+
 
 }
