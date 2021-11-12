@@ -1,6 +1,8 @@
-package de.db.webapp.services.impl;
+package de.db.webapp.application;
+
 
 import de.db.webapp.repositories.PersonenRepository;
+import de.db.webapp.services.PersonenService;
 import de.db.webapp.services.impl.PersonenServiceImpl;
 import de.db.webapp.services.mapper.PersonMapper;
 import org.slf4j.Logger;
@@ -35,8 +37,11 @@ public class PersonConfig {
         return LoggerFactory.getLogger(injectionPoint.getMethodParameter().getContainingClass());
     }
 
-//    @Bean
-//    public PersonenService createPersonenService(PersonenRepository repo, PersonMapper mapper, List<String> antipathen) {
-//        return new PersonenServiceImpl(repo,mapper,antipathen);
-//    }
+
+    @Bean
+    public PersonenService createPersonenService(final PersonenRepository repo, final PersonMapper mapper, @Qualifier("antipathen") final List<String> antipathen){
+        return new PersonenServiceImpl(repo,mapper,antipathen);
+    }
+
+
 }

@@ -21,7 +21,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/v1/personen")
 @AllArgsConstructor
-public class PersonenController {
+public class PersonenQueryController {
 
     private final PersonenService service;
     private final PersonDTOMapper mapper;
@@ -43,30 +43,9 @@ public class PersonenController {
         return ResponseEntity.ok(mapper.convert(service.findeAlle()));
     }
 
-    @ApiResponse(responseCode = "204", description = "Person wurde geloescht")
-    @ApiResponse(responseCode = "404", description = "Person wurde nicht gefunden")
-    @ApiResponse(responseCode = "500", description = "Interner Serverfehler")
-    @DeleteMapping(path = "/{id}")
-    public ResponseEntity<Void> deleteById(@PathVariable  String id) throws Exception{
-        if(service.loeschen(id)){
-           return ResponseEntity.noContent().build();
-        }
-        return ResponseEntity.notFound().build();
-    }
 
-    @ApiResponse(responseCode = "200", description = "Person wurde geaendert")
-    @ApiResponse(responseCode = "201", description = "Person wurde erfasst")
-    @ApiResponse(responseCode = "500", description = "Interner Serverfehler")
-    @PutMapping(path="", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Void> saveOrUpdate(@Valid @RequestBody  PersonDTO person) throws Exception{
-        System.out.println(Thread.currentThread().getId());
 
-        // Async
-        service.speichernOderAendern(mapper.convert(person));
 
-        return ResponseEntity.ok().build();
-
-    }
 
 //    @ApiResponse(responseCode = "200", description = "Person wurde geaendert")
 //    @ApiResponse(responseCode = "201", description = "Person wurde erfasst")

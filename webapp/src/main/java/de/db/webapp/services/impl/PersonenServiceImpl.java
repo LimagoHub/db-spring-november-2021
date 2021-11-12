@@ -1,29 +1,15 @@
 package de.db.webapp.services.impl;
 
 import de.db.webapp.repositories.PersonenRepository;
-import de.db.webapp.repositories.entities.PersonEntity;
 import de.db.webapp.services.PersonenService;
 import de.db.webapp.services.PersonenServiceException;
 import de.db.webapp.services.mapper.PersonMapper;
 import de.db.webapp.services.models.Person;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.scheduling.annotation.Async;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Isolation;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 
-
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.Future;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
-@Service
-@Transactional(rollbackFor = PersonenServiceException.class, propagation = Propagation.REQUIRED, isolation = Isolation.READ_COMMITTED)
+
 public class PersonenServiceImpl implements PersonenService {
 
     private final PersonenRepository repo;
@@ -32,7 +18,7 @@ public class PersonenServiceImpl implements PersonenService {
 
 
 
-    public PersonenServiceImpl(final PersonenRepository repo, final PersonMapper mapper,  @Qualifier("antipathen") final List<String> antipathen) {
+    public PersonenServiceImpl(final PersonenRepository repo, final PersonMapper mapper,  final List<String> antipathen) {
         this.repo = repo;
         this.mapper = mapper;
         this.antipathen = antipathen;
@@ -59,14 +45,13 @@ public class PersonenServiceImpl implements PersonenService {
     }
 
     @Override
-    @Async
+
     public void speichernOderAendern(Person person) throws PersonenServiceException {
         System.out.println("Threadid = " + Thread.currentThread().getId());
         try {
 
-
-            Thread.sleep(2000);
             speichernImpl(person);
+
         } catch (Exception e) {
             // Loggen
             throw new PersonenServiceException("Fehler im Service", e);

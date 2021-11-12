@@ -40,12 +40,12 @@ public class LoggerAspect {
     public void afterReturning(JoinPoint joinPoint, Object retval) {
         logger.warn("Rueckgabe: = {}", retval.toString());
     }
-    @AfterThrowing(value = "execution(public * de.db.webapp.controllers.PersonenController.*(..))",throwing = "ex")
+    @AfterThrowing(value = "execution(public * de.db.webapp.controllers.PersonenQueryController.*(..))",throwing = "ex")
     public void afterReturning(JoinPoint joinPoint, Throwable ex) {
         logger.warn("Fehler: = {}", ex.getMessage());
     }
 
-    @Around(value = "execution(public * de.db.webapp.controllers.PersonenController.*(..))")
+    @Around(value = "execution(public * de.db.webapp.controllers.PersonenQueryController.*(..))")
     public Object timeMessung(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
         Instant start = Instant.now();
 
