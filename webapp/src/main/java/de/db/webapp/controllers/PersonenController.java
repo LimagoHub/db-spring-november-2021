@@ -59,22 +59,26 @@ public class PersonenController {
     @ApiResponse(responseCode = "500", description = "Interner Serverfehler")
     @PutMapping(path="", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Void> saveOrUpdate(@Valid @RequestBody  PersonDTO person) throws Exception{
-        if(service.speichernOderAendern(mapper.convert(person)))
-            return ResponseEntity.ok().build();
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+        System.out.println(Thread.currentThread().getId());
+
+        // Async
+        service.speichernOderAendern(mapper.convert(person));
+
+        return ResponseEntity.ok().build();
+
     }
 
-    @ApiResponse(responseCode = "200", description = "Person wurde geaendert")
-    @ApiResponse(responseCode = "201", description = "Person wurde erfasst")
-    @ApiResponse(responseCode = "500", description = "Interner Serverfehler")
-    @PostMapping(path="", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Void> saveOrUpdateNotIdempotent(@RequestBody  PersonDTO person, UriComponentsBuilder builder)  throws Exception{
-        person.setId(UUID.randomUUID().toString()); // Hier nicht sinnvoll
-        UriComponents uriComponents = builder.path("/v1/personen/{id}").buildAndExpand(person.getId());
-        if(service.speichernOderAendern(mapper.convert(person)))
-            return ResponseEntity.ok().build();
-        return ResponseEntity.status(HttpStatus.CREATED).build();
-    }
+//    @ApiResponse(responseCode = "200", description = "Person wurde geaendert")
+//    @ApiResponse(responseCode = "201", description = "Person wurde erfasst")
+//    @ApiResponse(responseCode = "500", description = "Interner Serverfehler")
+//    @PostMapping(path="", consumes = MediaType.APPLICATION_JSON_VALUE)
+//    public ResponseEntity<Void> saveOrUpdateNotIdempotent(@RequestBody  PersonDTO person, UriComponentsBuilder builder)  throws Exception{
+//        person.setId(UUID.randomUUID().toString()); // Hier nicht sinnvoll
+//        UriComponents uriComponents = builder.path("/v1/personen/{id}").buildAndExpand(person.getId());
+//        if(service.speichernOderAendern(mapper.convert(person)))
+//            return ResponseEntity.ok().build();
+//        return ResponseEntity.status(HttpStatus.CREATED).build();
+//    }
 
     @PostMapping(path="/toUpper", consumes = MediaType.APPLICATION_JSON_VALUE, produces =  MediaType.APPLICATION_JSON_VALUE) // Ersatzget
     public ResponseEntity<PersonDTO> toUpper (@RequestBody  PersonDTO person) {

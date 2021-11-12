@@ -6,7 +6,9 @@ import de.db.webapp.services.PersonenService;
 import de.db.webapp.services.PersonenServiceException;
 import de.db.webapp.services.mapper.PersonMapper;
 import de.db.webapp.services.models.Person;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
@@ -16,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -26,6 +29,8 @@ public class PersonenServiceImpl implements PersonenService {
     private final PersonenRepository repo;
     private final PersonMapper mapper;
     private final List<String> antipathen;
+
+
 
     public PersonenServiceImpl(final PersonenRepository repo, final PersonMapper mapper,  @Qualifier("antipathen") final List<String> antipathen) {
         this.repo = repo;
@@ -54,23 +59,28 @@ public class PersonenServiceImpl implements PersonenService {
     }
 
     @Override
-    public boolean speichernOderAendern(Person person) throws PersonenServiceException {
+    @Async
+    public void speichernOderAendern(Person person) throws PersonenServiceException {
+        System.out.println("Threadid = " + Thread.currentThread().getId());
         try {
-            return speichernImpl(person);
-        } catch (RuntimeException e) {
+
+
+            Thread.sleep(2000);
+            speichernImpl(person);
+        } catch (Exception e) {
             // Loggen
             throw new PersonenServiceException("Fehler im Service", e);
         }
     }
 
-    private boolean speichernImpl(Person person) throws PersonenServiceException {
+    private void speichernImpl(Person person) throws PersonenServiceException {
         checkPerson(person);
 
-        boolean result = repo.existsById(person.getId());
+
 
         repo.save(mapper.convert(person));
 
-        return result;
+
     }
 
     private void checkPerson(Person person) throws PersonenServiceException {

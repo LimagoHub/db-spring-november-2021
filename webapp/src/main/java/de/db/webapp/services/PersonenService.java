@@ -6,7 +6,7 @@ import java.util.Optional;
 
 public interface PersonenService {
 
-    boolean speichernOderAendern(Person person) throws PersonenServiceException ;
+    void speichernOderAendern(Person person) throws PersonenServiceException ;
     boolean loeschen(Person person) throws PersonenServiceException ;
     boolean loeschen(String id) throws PersonenServiceException ;
     Optional<Person> findePersonNachId(String id) throws PersonenServiceException;

@@ -21,6 +21,7 @@ public class Main {
             for(int i = 0 ; i < availableProcessors;i++) {
                 futures.add(service.submit(new MyCallable()));
             }
+
             service.shutdown();
 
             futures.stream().map(this::convert).forEach(System.out::println);
